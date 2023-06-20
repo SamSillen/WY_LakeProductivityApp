@@ -17,15 +17,16 @@ library(leaflet)
 library(scales)
 
 
-temp <- read.csv("data/WY_ProductivityApp_TrophicState_Data.csv")
-preds2 <- read.csv("data/WY_ProductivityApp_ColorData.csv")
-preds2$date <- as_date(preds2$date)
+trophic_data <- read.csv("data/WY_ProductivityApp_TrophicState_Data.csv")
+color_data <- read.csv("data/WY_ProductivityApp_ColorData.csv")
 
-temp$lagoslakeid <- as.character(temp$lagoslakeid)
+color_data$date <- as_date(color_data$date)
+
+trophic_data$lagoslakeid <- as.character(trophic_data$lagoslakeid)
 
 pal <- colorFactor(c('#698c86', '#7dae38', '#2158bc' ), domain = c("no trend","trending oligotrophic", "trending eutrophic" ))
 
-temp$trend <- factor(temp$trend, levels = c('no trend', 'trending oligotrophic', 'trending eutrophic'))
+trophic_data$trend <- factor(trophic_data$trend, levels = c('no trend', 'trending oligotrophic', 'trending eutrophic'))
 
 fui.colors <- c(
   "#2158bc", "#316dc5", "#327cbb", "#4b80a0", "#568f96", "#6d9298", "#698c86", 
@@ -33,8 +34,8 @@ fui.colors <- c(
   "#adb55f", "#a8a965", "#ae9f5c", "#b3a053", "#af8a44", "#a46905", "#9f4d04")
 
 
-min.fui <- min(preds2$fui, na.rm = TRUE)
-max.fui <- max(preds2$fui, na.rm = TRUE)
+min.fui <- min(color_data$fui, na.rm = TRUE)
+max.fui <- max(color_data$fui, na.rm = TRUE)
 
 
 
@@ -48,13 +49,13 @@ server <- function(input, output) {
   output$wsmap <- renderLeaflet({
     leaflet() %>%
       addTiles() %>%
-      addCircleMarkers(data = temp,lat = temp$lake_lat_decdeg, lng = temp$lake_lon_decdeg, weight = 2, fillColor = ~pal(trend), color = 'black', stroke = FALSE, fillOpacity = .8, radius = 5, layerId= temp$lagoslakeid, popup = temp$lake_namelagos) 
+      addCircleMarkers(data = trophic_data,lat = trophic_data$lake_lat_decdeg, lng = trophic_data$lake_lon_decdeg, weight = 2, fillColor = ~pal(trend), color = 'black', stroke = FALSE, fillOpacity = .8, radius = 5, layerId= trophic_data$lagoslakeid, popup = trophic_data$lake_namelagos) 
   })
   
   # generate plots
   ggplot_data <- reactive({
     lagoslakeid <- input$wsmap_marker_click$id
-    temp[temp$lagoslakeid %in% lagoslakeid,]
+    trophic_data[trophic_data$lagoslakeid %in% lagoslakeid,]
   })
   
   #generate plots
@@ -71,7 +72,7 @@ server <- function(input, output) {
   # generate plots
   ggplot_data2 <- reactive({
     lagoslakeid <- input$wsmap_marker_click$id
-    preds2[preds2$lagoslakeid %in% lagoslakeid,]
+    color_data[color_data$lagoslakeid %in% lagoslakeid,]
   })
   
   #generate plots

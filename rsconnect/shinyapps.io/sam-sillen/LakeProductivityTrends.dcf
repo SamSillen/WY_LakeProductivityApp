@@ -1,0 +1,13 @@
+name: LakeProductivityTrends
+title: LakeProductivityTrends
+username:
+account: sam-sillen
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 7174426
+bundleId: 6357194
+url: https://sam-sillen.shinyapps.io/LakeProductivityTrends/
+when: 1664566881.88652
+lastSyncTime: 1664566881.88655
+asMultiple: FALSE
+asStatic: FALSE
